@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{83337FF3-3334-42EC-824D-532FF0C973A9}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ProjectGolan.Vrobot3</RootNamespace>
+    <AssemblyName>vrobot3</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <StartupObject>ProjectGolan.Vrobot3.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="Discord.Net">
+      <HintPath>packages/Discord.Net.0.9.6/lib/net45/Discord.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Discord.Net.Audio">
+      <HintPath>packages/Discord.Net.Audio.0.9.6/lib/net45/Discord.Net.Audio.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>packages/HtmlAgilityPack.1.4.9.5/lib/Net45/HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>packages/Newtonsoft.Json.9.0.2-beta1/lib/net45/Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NtpDateTime">
+      <HintPath>packages/NtpDateTime.1.0.8/lib/NtpDateTime.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSocket4Net">
+      <HintPath>packages/WebSocket4Net.0.14.1/lib/net45/WebSocket4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>packages/RestSharp.105.2.3/lib/net45/RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Concurrent">
+      <HintPath>packages/Nito.AsyncEx.3.0.1/lib/net45/Nito.AsyncEx.Concurrent.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx">
+      <HintPath>packages/Nito.AsyncEx.3.0.1/lib/net45/Nito.AsyncEx.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Enlightenment">
+      <HintPath>packages/Nito.AsyncEx.3.0.1/lib/net45/Nito.AsyncEx.Enlightenment.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties/AssemblyInfo.cs" />
+    <Compile Include="Source/Bot.cs" />
+    <Compile Include="Source/BotClient.cs" />
+    <Compile Include="Source/BotClientDiscord.cs" />
+    <Compile Include="Source/BotClientIRC.cs" />
+    <Compile Include="Source/BotEvents.cs" />
+    <Compile Include="Source/BotInfo.cs" />
+    <Compile Include="Source/BotModule.cs" />
+    <Compile Include="Source/Exceptions.cs" />
+    <Compile Include="Source/Links.cs" />
+    <Compile Include="Source/Program.cs" />
+    <Compile Include="Source/Utils.cs" />
+    <Compile Include="Source/Modules/Mod_Admin.cs" />
+    <Compile Include="Source/Modules/Mod_Audio.cs" />
+    <Compile Include="Source/Modules/Mod_Fun.cs" />
+    <Compile Include="Source/Modules/Mod_Utils.cs" />
+    <Compile Include="Source/Modules/Mod_Idgames.cs" />
+    <Compile Include="Source/Modules/Mod_Quote.cs" />
+    <Compile Include="Source/Modules/Mod_Shittalk.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)/Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

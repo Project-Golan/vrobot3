@@ -1,0 +1,7 @@
+.nuget
+obj
+bin
+data
+packages
+*.swp
+Makefile
