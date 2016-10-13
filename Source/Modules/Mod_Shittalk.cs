@@ -31,7 +31,7 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       public void onMessage(User usr, Channel channel, String msg)
       {
-         if(usr.name == "_sink" || rnd.Next(0, 1024) == 1)
+         if(rnd.Next(0, 1024) == 1)
             shittalk(usr, channel);
       }
 
