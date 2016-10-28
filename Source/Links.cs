@@ -70,7 +70,7 @@ namespace ProjectGolan.Vrobot3
             var matchbox = Finder.Matches(str);
             if(matchbox.Count == 0) return null;
             var matches = new URI[matchbox.Count];
-            for(int i = 0; i < matchbox.Count; i++)
+            for(var i = 0; i < matchbox.Count; i++)
                matches[i] = FromMatch(matchbox[i]);
             return matches;
          }

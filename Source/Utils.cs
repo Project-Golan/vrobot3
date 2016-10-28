@@ -39,7 +39,7 @@ namespace ProjectGolan.Vrobot3
       public static Random GetRND()
       {
          RNDHash *= DateTime.UtcNow.ToFileTime();
-         Random rnd = new Random(unchecked((int)(RNDHash & 0x7fffffff)));
+         var rnd = new Random(unchecked((int)(RNDHash & 0x7fffffff)));
          RNDHash ^= 0x7f8f8f8f8f8f8f8f;
          RNDHash >>= 4;
          RNDHash += 0x7f0000007f000000;
@@ -58,10 +58,7 @@ namespace ProjectGolan.Vrobot3
          if(min == 1 && msg == String.Empty)
             throw new CommandArgumentException(help);
 
-         if(max == 0)
-            split = msg.Split(splitseq);
-         else
-            split = msg.Split(splitseq, max);
+         split = max == 0 ? msg.Split(splitseq) : msg.Split(splitseq, max);
 
          if(min >= 0 && split.Length < min)
             throw new CommandArgumentException(help);
@@ -72,7 +69,7 @@ namespace ProjectGolan.Vrobot3
       //
       // SetRange
       //
-      public static Double SetRange(Double x, Double min, Double max)
+      public static double SetRange(double x, double min, double max)
          => ((max - min) * x) + min;
 
       //
@@ -80,15 +77,15 @@ namespace ProjectGolan.Vrobot3
       //
       public static String FuzzyRelativeDate(DateTime then, DateTime now)
       {
-         TimeSpan span = now.Subtract(then);
+         var span = now.Subtract(then);
 
          if(span.Seconds == 0)
             return "now";
 
-         String denom = span.Days > 0 ? "day" :
-                        span.Hours > 0 ? "hour" :
-                        span.Minutes > 0 ? "minute" :
-                        "second";
+         var denom = span.Days > 0 ? "day" :
+                     span.Hours > 0 ? "hour" :
+                     span.Minutes > 0 ? "minute" :
+                     "second";
 
          int number;
          switch(denom)
@@ -100,8 +97,7 @@ namespace ProjectGolan.Vrobot3
          case "day":    number = span.Days;    break;
          }
 
-         return String.Format("{0} {1}{2} ago", number, denom,
-            number != 1 ? "s" : String.Empty);
+         return $"{number} {denom}{number != 1 ? "s" : String.Empty} ago";
       }
 
       //
@@ -117,11 +113,12 @@ namespace ProjectGolan.Vrobot3
       {
          try
          {
-            byte[] bufp = new byte[maxsize];
-            int read;
+            var bufp = new byte[maxsize];
+            var read = 0;
 
             using(var stream = resp.GetResponseStream())
-               read = stream.Read(bufp, 0, maxsize);
+               if(stream != null)
+                  read = stream.Read(bufp, 0, maxsize);
 
             return Encoding.Default.GetString(bufp, 0, read);
          }

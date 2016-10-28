@@ -5,7 +5,7 @@
 // See "LICENSE" for more information.
 //
 //-----------------------------------------------------------------------------
-// 
+//
 // Idgames search module.
 // .idgames
 //
@@ -26,7 +26,7 @@ namespace ProjectGolan.Vrobot3.Modules
    //
    public class Mod_Idgames : IBotModule
    {
-      static readonly String APIURI =
+      private const String APIURI =
          "http://doomworld.com/idgames/api/api.php";
 
       private Random rnd = Utils.GetRND();
@@ -34,8 +34,8 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       // Mod_Idgames constructor
       //
-      public Mod_Idgames(Bot bot_) :
-         base(bot_)
+      public Mod_Idgames(Bot bot) :
+         base(bot)
       {
          commands["idgames"] = new BotCommandStructure{
             cmd = cmdIdgames,
@@ -51,11 +51,11 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       public void cmdIdgames(User usr, Channel channel, String msg)
       {
-         String[] args =
-            Utils.GetArguments(msg, commands["idgames"].help, 0, 3);
+         var args = Utils.GetArguments(msg, commands["idgames"].help, 0, 3);
 
          switch(args.Length)
          {
+         default:
          case 1:
             int id;
             if(args[0].Trim().Length == 0)
@@ -67,10 +67,7 @@ namespace ProjectGolan.Vrobot3.Modules
             break;
          case 2: idgames(usr, channel, args[0], args[1]); break;
          case 3:
-            if(args[2].Trim().ToLower() == "random")
-               idgames(usr, channel, args[0], args[1], "random");
-            else
-               idgames(usr, channel, args[0], args[1], args[2].Trim());
+            idgames(usr, channel, args[0], args[1], args[2].Trim());
             break;
          }
       }
@@ -82,6 +79,8 @@ namespace ProjectGolan.Vrobot3.Modules
       {
          var req = WebRequest.Create("http://doomworld.com/idgames/?random")
             as HttpWebRequest;
+         if(req == null) throw new CommandArgumentException("fug it borked");
+
          req.Referer = "http://doomworld.com/idgames/";
          bot.message(channel,
             Discord.Format.Escape(req.GetResponse().ResponseUri.ToString()));
@@ -94,6 +93,7 @@ namespace ProjectGolan.Vrobot3.Modules
       {
          var req = WebRequest.Create(APIURI + "?action=get&id=" + id)
             as HttpWebRequest;
+         if(req == null) throw new CommandArgumentException("fug it borked");
 
          using(var response = req.GetResponse())
          {
@@ -120,9 +120,9 @@ namespace ProjectGolan.Vrobot3.Modules
       private void idgames(User usr, Channel channel, String inquiry,
          String type = "title", String pos = "1")
       {
-         int ipos = 0;
+         var ipos = 0;
 
-         if(pos != "random")
+         if(pos.ToLower() != "random")
          {
             Utils.TryParse(pos, "Invalid position.", out ipos);
 
@@ -145,8 +145,8 @@ namespace ProjectGolan.Vrobot3.Modules
          if(!validtypes.Contains(type))
             throw new CommandArgumentException("Invalid inquiry type.");
 
-         String uri = APIURI + "?action=search&sort=rating&query=" +
-            inquiry + "&type=" + type;
+         var uri = APIURI + "?action=search&sort=rating&query=" + inquiry +
+                   "&type=" + type;
          var req = WebRequest.Create(uri);
          Console.WriteLine("idgames query: {0}", uri);
 
@@ -167,7 +167,7 @@ namespace ProjectGolan.Vrobot3.Modules
             if(pos == "random")          ipos = rnd.Next(0, x_titles.Count());
             if(ipos >= x_titles.Count()) ipos = x_titles.Count() - 1;
 
-            String title = x_titles.ElementAtOrDefault(ipos);
+            var title = x_titles.ElementAtOrDefault(ipos) ?? "invalid title";
             if(title.Trim().Length > 0) title = "[ " + title + " ] ";
 
             bot.message(channel,

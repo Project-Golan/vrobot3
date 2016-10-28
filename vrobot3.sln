@@ -5,14 +5,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vrobot3", "vrobot3.csproj",
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x86 = Debug|x86
-		Release|x86 = Release|x86
+		Debug|AnyCPU = Debug|AnyCPU
+		Release|AnyCPU = Release|AnyCPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{83337FF3-3334-42EC-824D-532FF0C973A9}.Debug|x86.ActiveCfg = Debug|x86
-		{83337FF3-3334-42EC-824D-532FF0C973A9}.Debug|x86.Build.0 = Debug|x86
-		{83337FF3-3334-42EC-824D-532FF0C973A9}.Release|x86.ActiveCfg = Release|x86
-		{83337FF3-3334-42EC-824D-532FF0C973A9}.Release|x86.Build.0 = Release|x86
+		{83337FF3-3334-42EC-824D-532FF0C973A9}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
+		{83337FF3-3334-42EC-824D-532FF0C973A9}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
+		{83337FF3-3334-42EC-824D-532FF0C973A9}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{83337FF3-3334-42EC-824D-532FF0C973A9}.Release|AnyCPU.Build.0 = Release|AnyCPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

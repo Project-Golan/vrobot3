@@ -40,10 +40,10 @@ namespace ProjectGolan.Vrobot3
          public BotInfo[]   servers;
       }
 
-      private List<Bot>    bots    = new List<Bot>();
-      private List<Thread> threads = new List<Thread>();
-      public  String       dataDir = "../data";
-      public  ProgramInfo  info;
+      private readonly List<Bot>    bots    = new List<Bot>();
+      private readonly List<Thread> threads = new List<Thread>();
+      public  String                dataDir = "../data";
+      public  ProgramInfo           info;
 
       public static Program Instance;
 
@@ -69,8 +69,8 @@ namespace ProjectGolan.Vrobot3
 
             info = config.info;
 
-            foreach(var info in config.servers)
-               threads.AddItem(new Thread(bots.AddItem(new Bot(info)).connect)).Start();
+            foreach(var server in config.servers)
+               threads.AddItem(new Thread(bots.AddItem(new Bot(server)).connect)).Start();
          }
          catch(Exception exc)
          {
@@ -91,6 +91,7 @@ namespace ProjectGolan.Vrobot3
                File.WriteAllText(dataDir + "/disconnectexcdump.txt",
                   exc.ToString());
             }
+
          bots.Clear();
          threads.Clear();
       }

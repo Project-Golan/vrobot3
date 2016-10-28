@@ -24,8 +24,8 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       // Mod_Admin constructor
       //
-      public Mod_Admin(Bot bot_) :
-         base(bot_)
+      public Mod_Admin(Bot bot) :
+         base(bot)
       {
          commands["kill"] = new BotCommandStructure{
             cmd = cmdKill,
@@ -65,7 +65,7 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       public void cmdMsg(User usr, Channel channel, String msg)
       {
-         String[] args = Utils.GetArguments(msg, commands["msg"].help, 2, 2);
+         var args = Utils.GetArguments(msg, commands["msg"].help, 2, 2);
          bot.message(ulong.Parse(args[0]), args[1].Trim());
       }
 
@@ -74,7 +74,7 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       public void cmdAction(User usr, Channel channel, String msg)
       {
-         String[] args = Utils.GetArguments(msg, commands["action"].help, 2, 2);
+         var args = Utils.GetArguments(msg, commands["action"].help, 2, 2);
          bot.action(ulong.Parse(args[0]), args[1].Trim());
       }
    }

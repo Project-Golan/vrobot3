@@ -29,9 +29,8 @@ namespace ProjectGolan.Vrobot3.Modules
          public int numQuotes;
       }
 
-      static readonly String APIURI = "http://www.greyserv.net/qdb/q/";
-      static readonly String InterfaceURI =
-         "http://www.greyserv.net/qdb/interface.cgi";
+      const String APIURI = "http://www.greyserv.net/qdb/q/";
+      const String InterfaceURI = "http://www.greyserv.net/qdb/interface.cgi";
       private Random rnd = Utils.GetRND();
 
       //
@@ -86,7 +85,7 @@ namespace ProjectGolan.Vrobot3.Modules
          else
             foreach(var ln_ in lines)
             {
-               String ln = ln_.Trim();
+               var ln = ln_.Trim();
                if(ln.Length > 0)
                   bot.message(channel, ln);
             }

@@ -21,13 +21,13 @@ namespace ProjectGolan.Vrobot3.Modules
    //
    public class Mod_Utils : IBotModule
    {
-      private Random rnd = Utils.GetRND();
+      private readonly Random rnd = Utils.GetRND();
 
       //
       // Mod_Utils constructor
       //
-      public Mod_Utils(Bot bot_) :
-         base(bot_)
+      public Mod_Utils(Bot bot) :
+         base(bot)
       {
          commands["rand"] = new BotCommandStructure{
             cmd = cmdRand,
@@ -43,7 +43,7 @@ namespace ProjectGolan.Vrobot3.Modules
                    "Example: .help\n" +
                    "Example: .help eightball"
          };
-         
+
          commands["decide"] = new BotCommandStructure{
             cmd = cmdDecide,
             help = "Decides between 2 or more choices.\n" +
@@ -73,9 +73,8 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       public void cmdRand(User usr, Channel channel, String msg)
       {
-         String[] args =
-            Utils.GetArguments(msg, commands["rand"].help, 1, 2, ' ');
-         Double max = 0.0, min = 0.0;
+         var args = Utils.GetArguments(msg, commands["rand"].help, 1, 2, ' ');
+         double max = 0.0, min = 0.0;
 
          Utils.TryParse(args[0].Trim(), "Invalid maximum.", out max);
 
@@ -103,7 +102,7 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       public void cmdDecide(User usr, Channel channel, String msg)
       {
-         String[] args = Utils.GetArguments(msg, commands["decide"].help, 2);
+         var args = Utils.GetArguments(msg, commands["decide"].help, 2);
          bot.reply(usr, channel, args[rnd.Next(args.Length)].Trim());
       }
 
@@ -112,7 +111,7 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       private void helpList(Channel channel, bool admin)
       {
-         String outp = String.Empty;
+         var outp = String.Empty;
          var en =
             from kvp in bot.cmdfuncs
                let f = kvp.Value.Item2.flags
@@ -144,7 +143,7 @@ namespace ProjectGolan.Vrobot3.Modules
          if(bot.cmdfuncs.ContainsKey(cmdname))
          {
             var str = bot.cmdfuncs[cmdname].Item2.help;
-            if(!bot.serverInfo.hasNewlines) str.Replace("\n", " || ");
+            if(!bot.clientInfo.hasNewlines) str = str.Replace("\n", " || ");
             bot.message(channel, str ?? "No help available for this command.");
          }
          else

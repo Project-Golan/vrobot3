@@ -48,10 +48,10 @@ namespace ProjectGolan.Vrobot3.Modules
          //
          public void run(User usr, Channel channel, String msg)
          {
-            int n = rnd.Next(min, max);
-            String outp = String.Empty;
+            var n = rnd.Next(min, max);
+            var outp = String.Empty;
 
-            if(bot.serverInfo.hasColors && rnd.Next(0, 8) == 1)
+            if(bot.clientInfo.hasColors && rnd.Next(0, 8) == 1)
                for(int i = 0; i < 6; i++)
                {
                   String[] colors = { "04", "07", "08", "09", "12", "06" };
@@ -61,7 +61,7 @@ namespace ProjectGolan.Vrobot3.Modules
                   outp += word;
                }
             else
-               for(int i = 0; i < n; i++)
+               for(var i = 0; i < n; i++)
                   outp += word;
 
             bot.reply(usr, channel, outp + final);
@@ -71,8 +71,8 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       // Mod_Fun constructor
       //
-      public Mod_Fun(Bot bot_) :
-         base(bot_)
+      public Mod_Fun(Bot bot) :
+         base(bot)
       {
          commands["carmack"] = new BotCommandStructure{
             cmd = new ShitpostingDevice("MM", "", 3, 20, bot).run,

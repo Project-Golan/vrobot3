@@ -15,7 +15,7 @@ namespace ProjectGolan.Vrobot3.Modules
    //
    public class Mod_Shittalk : IBotModule
    {
-      private Random rnd = Utils.GetRND();
+      private readonly Random rnd = Utils.GetRND();
 
       //
       // Mod_Shittalk constructor
@@ -49,7 +49,8 @@ namespace ProjectGolan.Vrobot3.Modules
             "%s DESERVES AN AWARD. AN AWARD FOR BEING UGLY.",
             "MAN SOMETIMES I REALLY WANT TO PUNCH %s IN THE GOD DAMN FACE",
             "THERE IS SOMETHING WRONG IN THIS CHANNEL. THAT SOMETHING IS %s.",
-            "%s IS A TOTAL SCRUB", "%s IS THE CONDUCTOR OF THE JELLY TRAIN",
+            "%s IS A TOTAL SCRUB",
+            "%s IS THE CONDUCTOR OF THE JELLY TRAIN",
             "%s IS A THING THAT SMELLS BAD MAYBE",
             "%s IS A PILE OF FAIL",
             "%s IS NOT AS COOL AS VROBOT",
@@ -103,10 +104,11 @@ namespace ProjectGolan.Vrobot3.Modules
             "I AM HERE TO FIGHT THE CANCER THAT AFFLICTS US ALL. NAMELY, %s.",
             "WELP, %s IS HERE",
             "OH HAI %s",
-            "marrub pls upgrade my processor i can't even count to eleventy"
+            "marrub pls upgrade my processor i can't even count to eleventy",
+            "THIS WAS ALL %s'S FAULT"
          };
 
-         String choice =
+         var choice =
             shittalk[rnd.Next(shittalk.Length)].Replace("%s", usr.name);
 
          if(choice.StartsWith("%m "))
