@@ -25,11 +25,11 @@ namespace ProjectGolan.Vrobot3
       public BotClientIRC(Bot bot) :
          base(bot)
       {
-         info.hasAudio          = false;
-         info.hasColors         = true;
-         info.hasNewlines       = false;
-         info.messageSafeMaxLen = 601;
-         info.shortMessages     = true;
+         this.info.hasAudio          = false;
+         this.info.hasColors         = true;
+         this.info.hasNewlines       = false;
+         this.info.messageSafeMaxLen = 601;
+         this.info.shortMessages     = true;
       }
 
       public override void connect() {}
@@ -39,6 +39,7 @@ namespace ProjectGolan.Vrobot3
       public override void partChannel(Channel channel) {}
       public override void sendAction(Channel channel, String msg) {}
       public override void sendMessage(Channel channel, String msg) {}
+      public override bool userPermitted(User usr, BotRole role) => true;
    }
 }
 

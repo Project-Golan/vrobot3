@@ -16,30 +16,51 @@ using System.Threading.Tasks;
 namespace ProjectGolan.Vrobot3
 {
    //
+   // BotClientInfo
+   //
+   public class BotClientInfo
+   {
+      public bool hasAudio;
+      public bool hasColors;
+      public bool hasNewlines;
+      public int  messageSafeMaxLen;
+      public bool shortMessages;
+   }
+
+   //
    // IBotClient
    //
    public abstract class IBotClient
    {
       protected Bot bot;
-      public ServerInfo info;
+      public BotClientInfo info { get; protected set; }
 
-      public IBotClient(Bot bot) { this.bot = bot; }
+      protected IBotClient(Bot bot)
+      {
+         this.info = new BotClientInfo();
+         this.bot = bot;
+      }
 
-      // Connect
+      // connect
       public abstract void connect();
       public abstract void disconnect();
 
-      // Send
+      // send
       public abstract void sendAction(Channel channel, String msg);
       public abstract void sendMessage(Channel channel, String msg);
+      public virtual void sendMessageRaw(Channel channel, String msg) =>
+         sendMessage(channel, msg);
 
-      // Channel
+      // channel
       public abstract Channel getChannel(ulong id);
       public virtual void joinChannel(Channel channel) {}
       public virtual void partChannel(Channel channel) {}
 
-      // Audio
-      public virtual ChannelAudio getAudioChannel(User user) =>
+      // user
+      public abstract bool userPermitted(User usr, BotRole role);
+
+      // audio
+      public virtual ChannelAudio getAudioChannel(User usr) =>
          new ChannelAudio();
       public virtual async Task joinAudioChannel(ChannelAudio channel) =>
          await Task.FromResult(0);

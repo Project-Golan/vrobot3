@@ -26,6 +26,19 @@ namespace ProjectGolan.Vrobot3
       {
       }
    }
+
+   //
+   // BotConfigurationException
+   //
+   public class BotConfigurationException : Exception
+   {
+      public BotConfigurationException() {}
+      public BotConfigurationException(String message) : base(message) {}
+      public BotConfigurationException(String message, Exception inner) :
+         base(message, inner)
+      {
+      }
+   }
 }
 
 // EOF

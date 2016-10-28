@@ -63,24 +63,24 @@ namespace ProjectGolan.Vrobot3.Modules
             throw new CommandArgumentException("invalid quote ID");
 
          var quote = Utils.GetResponseString(APIURI + id.ToString(),
-            bot.serverInfo.messageSafeMaxLen);
+            bot.clientInfo.messageSafeMaxLen);
 
          if(String.IsNullOrEmpty(quote))
             throw new CommandArgumentException("QDB exploded try again later");
 
-         if(bot.serverInfo.shortMessages)
+         if(bot.clientInfo.shortMessages)
             quote = Regex.Replace(quote, "\n+", "\n").Trim();
 
          var lines = quote.Split('\n');
 
-         if(bot.serverInfo.shortMessages &&
+         if(bot.clientInfo.shortMessages &&
             (lines.Length > 5 || quote.Length > 600))
          {
             bot.reply(usr, channel, "Quote is too long.");
             return;
          }
 
-         if(bot.serverInfo.hasNewlines)
+         if(bot.clientInfo.hasNewlines)
             bot.message(channel, quote);
          else
             foreach(var ln_ in lines)

@@ -70,17 +70,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties/AssemblyInfo.cs" />
-    <Compile Include="Source/Bot.cs" />
-    <Compile Include="Source/BotClient.cs" />
-    <Compile Include="Source/BotClientDiscord.cs" />
-    <Compile Include="Source/BotClientIRC.cs" />
-    <Compile Include="Source/BotEvents.cs" />
-    <Compile Include="Source/BotInfo.cs" />
-    <Compile Include="Source/BotModule.cs" />
-    <Compile Include="Source/Exceptions.cs" />
-    <Compile Include="Source/Links.cs" />
-    <Compile Include="Source/Program.cs" />
-    <Compile Include="Source/Utils.cs" />
+    <Compile Include="Source/Bot/Data.cs" />
+    <Compile Include="Source/Bot/Events.cs" />
+    <Compile Include="Source/Bot/Info.cs" />
+    <Compile Include="Source/Bot/Module.cs" />
+    <Compile Include="Source/Bot/PrivateFuncs.cs" />
+    <Compile Include="Source/Client/Client.cs" />
+    <Compile Include="Source/Client/Discord.cs" />
+    <Compile Include="Source/Client/IRC.cs" />
     <Compile Include="Source/Modules/Mod_Admin.cs" />
     <Compile Include="Source/Modules/Mod_Audio.cs" />
     <Compile Include="Source/Modules/Mod_Fun.cs" />
@@ -88,6 +85,10 @@
     <Compile Include="Source/Modules/Mod_Idgames.cs" />
     <Compile Include="Source/Modules/Mod_Quote.cs" />
     <Compile Include="Source/Modules/Mod_Shittalk.cs" />
+    <Compile Include="Source/Exceptions.cs" />
+    <Compile Include="Source/Links.cs" />
+    <Compile Include="Source/Program.cs" />
+    <Compile Include="Source/Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)/Microsoft.CSharp.targets" />
   <ItemGroup>

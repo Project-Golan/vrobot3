@@ -40,13 +40,6 @@ namespace ProjectGolan.Vrobot3
          public BotInfo[]   servers;
       }
 
-      private readonly List<Bot>    bots    = new List<Bot>();
-      private readonly List<Thread> threads = new List<Thread>();
-      public  String                dataDir = "../data";
-      public  ProgramInfo           info;
-
-      public static Program Instance;
-
       //
       // Main
       //
@@ -95,6 +88,13 @@ namespace ProjectGolan.Vrobot3
          bots.Clear();
          threads.Clear();
       }
+
+      private readonly List<Bot>    bots    = new List<Bot>();
+      private readonly List<Thread> threads = new List<Thread>();
+      public  String                dataDir = "../data";
+      public  ProgramInfo           info;
+
+      public static Program Instance;
    }
 }
 

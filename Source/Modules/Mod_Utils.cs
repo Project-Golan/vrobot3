@@ -114,9 +114,8 @@ namespace ProjectGolan.Vrobot3.Modules
          var outp = String.Empty;
          var en =
             from kvp in bot.cmdfuncs
-               let f = kvp.Value.Item2.flags
-               let fhidden = f.HasFlag(BotCommandFlags.Hidden)
-               let fadmin  = f.HasFlag(BotCommandFlags.AdminOnly)
+               let fhidden = kvp.Value.Item2.hidden
+               let fadmin  = kvp.Value.Item2.role != BotRole.User
                where
                   bot.checkModPermissions(channel, this.GetType()) &&
                   (admin || !fadmin) && !fhidden

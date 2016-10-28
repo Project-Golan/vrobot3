@@ -6,7 +6,7 @@
 //
 //-----------------------------------------------------------------------------
 //
-// Main bot class.
+// Data for the Bot class.
 //
 //-----------------------------------------------------------------------------
 
@@ -14,7 +14,6 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 
 using CommandFuncDict =
    System.Collections.Generic.Dictionary<
@@ -44,27 +43,31 @@ namespace ProjectGolan.Vrobot3
    //
    public partial class Bot
    {
-      public List<IBotModule> modules  = new List<IBotModule>();
-      public CommandFuncDict  cmdfuncs = new CommandFuncDict();
+      private readonly Dictionary<ulong, String> lastLine;
+      private readonly IBotClient                client;
+
+      public List<IBotModule> modules  { get; private set; }
+      public CommandFuncDict  cmdfuncs { get; private set; }
       public readonly BotInfo info;
 
-      private Dictionary<ulong, String> lastLine = new Dictionary<ulong, String>();
-      private IBotClient client;
-
-      public bool isInAudioChannel => false;
-      public ServerInfo serverInfo => client.info;
+      public bool          isInAudioChannel => client.isInAudioChannel();
+      public BotClientInfo clientInfo       => client.info;
 
       //
       // Bot constructor
       //
       public Bot(BotInfo info)
       {
-         this.info = info;
+         this.info     = info;
+         this.lastLine = new Dictionary<ulong, String>();
+         this.modules  = new List<IBotModule>();
+         this.cmdfuncs = new CommandFuncDict();
 
          switch(info.serverType)
          {
-         case ServerType.IRC:     client = new BotClientIRC(this);     break;
-         case ServerType.Discord: client = new BotClientDiscord(this); break;
+         case "IRC":     this.client = new BotClientIRC(this);     break;
+         case "Discord": this.client = new BotClientDiscord(this); break;
+         default: throw new BotConfigurationException("Invalid server type.");
          }
 
          var modClasses =
@@ -82,9 +85,32 @@ namespace ProjectGolan.Vrobot3
       }
 
       //
-      // connect
+      // client
       //
       public void connect() => client.connect();
+
+      public void action(Channel channel, String msg) =>
+         client.sendAction(channel, msg);
+      public void action(ulong id, String msg) =>
+         client.sendAction(client.getChannel(id), msg);
+
+      public void message(Channel channel, String msg) =>
+         client.sendMessage(channel, msg);
+      public void message(ulong id, String msg) =>
+         client.sendMessage(client.getChannel(id), msg);
+
+      public void messageRaw(Channel channel, String msg) =>
+         client.sendMessageRaw(channel, msg);
+      public void messageRaw(ulong id, String msg) =>
+         client.sendMessageRaw(client.getChannel(id), msg);
+
+      public void reply(User usr, Channel channel, String msg) =>
+         message(channel, usr.name + ": " + msg);
+      public void reply(User usr, ulong id, String msg) =>
+         message(id, usr.name + ": " + msg);
+
+      public void partAudioChannel() => client.partAudioChannel();
+      public Task playAudioFile(String file) => client.playAudioFile(file);
 
       //
       // disconnect
@@ -95,30 +121,6 @@ namespace ProjectGolan.Vrobot3
          modules.Clear();
          client.disconnect();
       }
-
-      //
-      // reply
-      //
-      public void reply(User usr, Channel channel, String msg) =>
-         message(channel, usr.name + ": " + msg);
-      public void reply(User usr, ulong id, String msg) =>
-         message(id, usr.name + ": " + msg);
-
-      //
-      // message
-      //
-      public void message(Channel channel, String msg) =>
-         client.sendMessage(channel, msg);
-      public void message(ulong id, String msg) =>
-         client.sendMessage(client.getChannel(id), msg);
-
-      //
-      // action
-      //
-      public void action(Channel channel, String msg) =>
-         client.sendAction(channel, msg);
-      public void action(ulong id, String msg) =>
-         client.sendAction(client.getChannel(id), msg);
 
       //
       // joinAudioChannel
@@ -134,16 +136,6 @@ namespace ProjectGolan.Vrobot3
          else
             return false;
       }
-
-      //
-      // partAudioChannel
-      //
-      public void partAudioChannel() => client.partAudioChannel();
-
-      //
-      // playAudioFile
-      //
-      public Task playAudioFile(String file) => client.playAudioFile(file);
 
       //
       // checkModPermissions
@@ -175,58 +167,6 @@ namespace ProjectGolan.Vrobot3
          }
 
          return false;
-      }
-
-      //
-      // runCommand
-      //
-      private void runCommand(User usr, Channel channel, BotCommand cmd,
-         String rest)
-      {
-         try
-         {
-            cmd(usr, channel, rest ?? String.Empty);
-         }
-         catch(CommandArgumentException exc)
-         {
-            if(exc.Message != null)
-               reply(usr, channel, exc.Message);
-            else
-               Console.WriteLine("{0}: Unknown CommandArgumentException",
-                  info.serverName);
-         }
-         catch(Exception exc)
-         {
-            reply(usr, channel, "fug it borked");
-            Console.WriteLine("{0}: Unhandled exception in command: {1}",
-               info.serverName, exc?.Message ?? "unknown error");
-            File.WriteAllText(Program.Instance.dataDir + "/cmdexcdump.txt",
-               exc.ToString());
-         }
-      }
-
-      //
-      // moduleIsValid
-      //
-      private bool moduleIsValid(Type type)
-      {
-         if(!typeof(IBotModule).IsAssignableFrom(type) ||
-            !type.IsClass || type.IsAbstract)
-            return false;
-
-         foreach(var attribute in type.GetCustomAttributes(false))
-         {
-            if((attribute is BotModuleIRCAttribute &&
-               info.serverType != ServerType.IRC) ||
-               (attribute is BotModuleDiscordAttribute &&
-               info.serverType != ServerType.Discord) ||
-               (attribute is BotModuleRequiresAudioAttribute &&
-               !serverInfo.hasAudio) ||
-               attribute is BotModuleDisabledAttribute)
-               return false;
-         }
-
-         return true;
       }
    }
 }

@@ -12,6 +12,7 @@
 //-----------------------------------------------------------------------------
 
 using System;
+using System.Linq;
 
 namespace ProjectGolan.Vrobot3.Modules
 {
@@ -74,29 +75,59 @@ namespace ProjectGolan.Vrobot3.Modules
       public Mod_Fun(Bot bot) :
          base(bot)
       {
-         commands["carmack"] = new BotCommandStructure{
+         commands["carmack"] = new BotCommandStructure {
             cmd = new ShitpostingDevice("MM", "", 3, 20, bot).run,
-            flags = BotCommandFlags.Hidden
+            hidden = true
          };
-         commands["revenant"] = new BotCommandStructure{
+
+         commands["revenant"] = new BotCommandStructure {
             cmd = new ShitpostingDevice("AA", "", 3, 20, bot).run,
-            flags = BotCommandFlags.Hidden
+            hidden = true
          };
-         commands["wan"] = new BotCommandStructure{
+
+         commands["wan"] = new BotCommandStructure {
             cmd = new ShitpostingDevice("wan ", "- !", 2, 12, bot).run,
-            flags = BotCommandFlags.Hidden
+            hidden = true
          };
-         commands["nyan"] = new BotCommandStructure{
+
+         commands["nyan"] = new BotCommandStructure {
             cmd = new ShitpostingDevice("nyan ", "!~", 2, 12, bot).run,
-            flags = BotCommandFlags.Hidden
+            hidden = true
          };
-         commands[":^)"] = new BotCommandStructure{
+
+         commands[":^)"] = new BotCommandStructure {
             cmd = (usr, channel, msg) => bot.message(channel, ":^)"),
-            flags = BotCommandFlags.Hidden
+            hidden = true
          };
+
+//       commands["box"] = new BotCommandStructure {
+//          cmd = cmdBox,
+//          hidden = true,
+//          role = BotRole.HalfAdmin
+//       };
 
          events.onMessage += onMessage;
       }
+
+      //
+      // cmdBox
+      //
+//    public void cmdBox(User usr, Channel channel, String msg)
+//    {
+//       var outp = msg + '\n';
+//
+//       for(var i = 1; i < msg.Length; i++)
+//       {
+//          var ln = msg[i].ToString();
+//          ln = ln.PadRight(msg.Length);
+//          ln += msg[msg.Length - i];
+//          outp += ln + '\n';
+//       }
+//
+//       outp += msg.Reverse();
+//
+//       bot.messageRaw(channel, outp);
+//    }
 
       //
       // onMessage

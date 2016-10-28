@@ -29,14 +29,14 @@ namespace ProjectGolan.Vrobot3.Modules
       {
          commands["kill"] = new BotCommandStructure{
             cmd = cmdKill,
-            flags = BotCommandFlags.AdminOnly,
+            role = BotRole.Admin,
             help = "Kills all bot instances.\n" +
                    "Syntax: %kill"
          };
 
          commands["msg"] = new BotCommandStructure{
             cmd = cmdMsg,
-            flags = BotCommandFlags.AdminOnly,
+            role = BotRole.Admin,
             help = "Sends a message.\n" +
                    "Syntax: %msg channel, msg\n" +
                    "Example: %msg #general, ur all dumb"
@@ -44,7 +44,7 @@ namespace ProjectGolan.Vrobot3.Modules
 
          commands["action"] = new BotCommandStructure{
             cmd = cmdAction,
-            flags = BotCommandFlags.AdminOnly,
+            role = BotRole.Admin,
             help = "Sends an action.\n" +
                    "Syntax: %action channel, msg\n" +
                    "Example: %action #general, explodes violently"

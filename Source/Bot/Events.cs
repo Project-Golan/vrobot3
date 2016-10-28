@@ -11,7 +11,6 @@
 //-----------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace ProjectGolan.Vrobot3
@@ -38,23 +37,25 @@ namespace ProjectGolan.Vrobot3
       //
       public void onMessage(User usr, Channel channel, String msg)
       {
-         var validCmdPreceders = ".%".ToCharArray();
+         var validCmdPreceders = ".%$".ToCharArray();
          String rest = null;
 
          if(msg.Length >= 1 && validCmdPreceders.Contains(msg[0]))
          {
             Predicate<BotCommandStructure> pred;
 
-            if(msg[0] == '%')
-               pred = fn =>  fn.flags.HasFlag(BotCommandFlags.AdminOnly);
-            else
-               pred = fn => !fn.flags.HasFlag(BotCommandFlags.AdminOnly);
+            switch(msg[0])
+            {
+            case '%': pred = fn => fn.role == BotRole.Admin;     break;
+            case '$': pred = fn => fn.role == BotRole.HalfAdmin; break;
+            default:  pred = fn => fn.role == BotRole.User;      break;
+            }
 
             var dict = from fn in cmdfuncs where pred(fn.Value.Item2) select fn;
 
             // Get the command name.
-            String[] splt = msg.Substring(1).Split(" ".ToCharArray(), 2);
-            String cmdname = splt[0].ToLower();
+            var splt = msg.Substring(1).Split(" ".ToCharArray(), 2);
+            var cmdname = splt[0].ToLower();
 
             // Handle commands ending with "^".
             // These take the last message as input.
@@ -71,9 +72,8 @@ namespace ProjectGolan.Vrobot3
                var tcmdr = tcmd.First();
 
                // Check permissions.
-               if(usr.hostname != info.adminId &&
-                  (tcmdr.Item2.flags.HasFlag(BotCommandFlags.AdminOnly) ||
-                  !checkModPermissions(channel, tcmdr.Item1.GetType())))
+               if(!client.userPermitted(usr, tcmdr.Item2.role) ||
+                  !checkModPermissions(channel, tcmdr.Item1.GetType()))
                   goto RaiseMessage;
 
                // If we have input, grab that too.

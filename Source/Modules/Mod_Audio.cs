@@ -29,7 +29,7 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       class QueueItem
       {
-         Utils.URI uri;
+         private Utils.URI uri;
 
          public QueueItem(Utils.URI uri)
          {
@@ -44,9 +44,9 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       class Queue
       {
-         TimeSpan        curTime;
-         List<QueueItem> items;
-         int             pos;
+         private TimeSpan        curTime;
+         private List<QueueItem> items;
+         private int             pos;
 
          public Queue()
          {
@@ -63,9 +63,9 @@ namespace ProjectGolan.Vrobot3.Modules
          }
       }
 
-      String[] validMethods = { "http", "https", "ftp", "ftps" };
-      Random rnd = Utils.GetRND();
-      Queue queue = new Queue();
+      private readonly String[] validMethods =
+         { "http", "https", "ftp", "ftps" };
+      private Queue queue = new Queue();
 
       //
       // Mod_Audio constructor
@@ -95,12 +95,6 @@ namespace ProjectGolan.Vrobot3.Modules
                    "Syntax: .lsqueue"
          };
 
-         commands["fugoff"] = new BotCommandStructure{
-            cmd = cmdFugOff,
-            help = "GET ME COGS OR FUG OFF",
-            flags = BotCommandFlags.AdminOnly
-         };
-
          commands["summon"] = new BotCommandStructure{
             cmd = cmdSummon,
             help = "Makes the bot join your audio channel.\n" +
@@ -111,14 +105,14 @@ namespace ProjectGolan.Vrobot3.Modules
             cmd = cmdVanquish,
             help = "Makes the bot leave their audio channel.\n" +
                    "Syntax: %vanquish",
-            flags = BotCommandFlags.AdminOnly
+            role = BotRole.HalfAdmin
          };
       }
 
       //
       // summon
       //
-      async Task<bool> summon(User usr, Channel channel)
+      private async Task<bool> summon(User usr, Channel channel)
       {
          if(bot.isInAudioChannel)
             return true;
@@ -158,7 +152,7 @@ namespace ProjectGolan.Vrobot3.Modules
          }
 
          bot.reply(usr, channel,
-            $"Added {loadPass} item{loadPass == 1 ? "" : "s"} to the queue.");
+            $"Added {loadPass} item{loadPass != 1 ? "s" : ""} to the queue.");
       }
 
       //
@@ -173,17 +167,6 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       public void cmdListQueue(User usr, Channel channel, String msg)
       {
-      }
-
-      //
-      // cmdFugOff
-      //
-      public async void cmdFugOff(User usr, Channel channel, String msg)
-      {
-         if(!await summon(usr, channel))
-            return;
-
-         await bot.playAudioFile("\"/home/marrub/musix/MusixDL/Shadowfax - Shadowdance/01 New Electric India.mp3\"").ConfigureAwait(false);
       }
 
       //

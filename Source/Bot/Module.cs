@@ -54,15 +54,15 @@ namespace ProjectGolan.Vrobot3
    }
 
    //
-   // BotCommandFlags
+   // BotRole
    //
-   // Flags for command registration.
+   // Used for command role-checking.
    //
-   [Flags]
-   public enum BotCommandFlags
+   public enum BotRole
    {
-      AdminOnly = 1 << 0,
-      Hidden    = 1 << 1
+      User,
+      HalfAdmin,
+      Admin
    }
 
    //
@@ -73,8 +73,9 @@ namespace ProjectGolan.Vrobot3
    public struct BotCommandStructure
    {
       public BotCommand cmd;
-      public BotCommandFlags flags;
-      public String help;
+      public String     help;
+      public bool       hidden;
+      public BotRole    role;
    }
 
    //
@@ -93,30 +94,21 @@ namespace ProjectGolan.Vrobot3
          public event Modules.EventType.OnMessage onMessage;
          public event Modules.EventType.OnSeen    onSeen;
 
-         public void raiseOnCmdMessage(User usr, Channel channel, String msg)
-         {
-            if(onCmdMessage != null)
-               onCmdMessage(usr, channel, msg);
-         }
+         public void raiseOnCmdMessage(User usr, Channel channel, String msg) =>
+            onCmdMessage?.Invoke(usr, channel, msg);
 
-         public void raiseOnMessage(User usr, Channel channel, String msg)
-         {
-            if(onMessage != null)
-               onMessage(usr, channel, msg);
-         }
+         public void raiseOnMessage(User usr, Channel channel, String msg) =>
+            onMessage?.Invoke(usr, channel, msg);
 
-         public void raiseOnSeen(User usr, Channel channel)
-         {
-            if(onSeen != null)
-               onSeen(usr, channel);
-         }
+         public void raiseOnSeen(User usr, Channel channel) =>
+            onSeen?.Invoke(usr, channel);
       }
 
-      public IBotModule(Bot bot) { this.bot = bot; }
+      protected IBotModule(Bot bot) { this.bot = bot; }
 
       public    CommandDict commands = new CommandDict();
-      public    Events events;
-      protected Bot bot;
+      public    Events      events;
+      protected Bot         bot;
    }
 }
 

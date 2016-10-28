@@ -24,27 +24,9 @@ namespace ProjectGolan.Vrobot3
    //
    public class BotClientDiscord : IBotClient
    {
-      //
-      // AudioBuffer
-      //
-      class AudioBuffer
-      {
-//       private static const int MaxSize = 20 * 1024 * 1024;
-         private readonly String name;
-         private ulong num     = 0;
-         private ulong next    = 1;
-         private ulong bufSize = 0;
-         public bool completed { get; private set; } = false;
-
-         public AudioBuffer()
-         {
-            name = System.IO.Path.GetRandomFileName() + ".";
-         }
-      }
-
-      private Discord.DiscordClient client = new Discord.DiscordClient();
+      private Discord.DiscordClient      client;
       private Discord.Audio.IAudioClient audioClient;
-      private Discord.Server server;
+      private Discord.Server             server;
 
       //
       // BotClientDiscord constructor
@@ -52,13 +34,15 @@ namespace ProjectGolan.Vrobot3
       public BotClientDiscord(Bot bot) :
          base(bot)
       {
-         info.hasAudio          = true;
-         info.hasColors         = false;
-         info.hasNewlines       = true;
-         info.messageSafeMaxLen = 1777;
-         info.shortMessages     = false;
+         this.client = new Discord.DiscordClient();
 
-         client.MessageReceived += (sender, evt) =>
+         this.info.hasAudio          = true;
+         this.info.hasColors         = false;
+         this.info.hasNewlines       = true;
+         this.info.messageSafeMaxLen = 1777;
+         this.info.shortMessages     = false;
+
+         this.client.MessageReceived += (sender, evt) =>
          {
             if(!evt.Message.IsAuthor && !evt.User.IsBot &&
                (bot.info.channels == null ||
@@ -78,7 +62,7 @@ namespace ProjectGolan.Vrobot3
             }
          };
 
-         client.UsingAudio(x => x.Mode = AudioMode.Outgoing);
+         this.client.UsingAudio(x => x.Mode = AudioMode.Outgoing);
       }
 
       //
@@ -89,6 +73,33 @@ namespace ProjectGolan.Vrobot3
          if(server == null)
             server = client.GetServer(ulong.Parse(bot.info.serverAddr));
          return server.GetUser(ulong.Parse(usr.hostname));
+      }
+
+      //
+      // checkRole
+      //
+      private bool checkRole(User usr, String[] strings)
+      {
+         var duser = getUser(usr);
+
+         foreach(var str in strings)
+         {
+            if(str[0] == '#')
+            {
+               var sel =
+                  from role in duser.Roles
+                  let strn = str.Substring(1)
+                  where role.Name == strn
+                  select role;
+
+               if(sel.Any())
+                  return true;
+            }
+            else if(usr.hostname == str)
+               return true;
+         }
+
+         return false;
       }
 
       //
@@ -131,6 +142,13 @@ namespace ProjectGolan.Vrobot3
          client.GetChannel(channel.id)?.SendMessage(Discord.Format.Escape(msg));
 
       //
+      // sendMessageRaw
+      //
+      public override void sendMessageRaw(Channel channel, String msg) =>
+         sendMessage(channel,
+            "```" + Discord.Format.Escape(msg ?? String.Empty) + "```");
+
+      //
       // getChannel
       //
       public override Channel getChannel(ulong id)
@@ -141,6 +159,14 @@ namespace ProjectGolan.Vrobot3
          channel.name = "#" + dchannel.Name;
          return channel;
       }
+
+      //
+      // userPermitted
+      //
+      public override bool userPermitted(User usr, BotRole role) =>
+         role == BotRole.User ||
+         (role == BotRole.HalfAdmin && checkRole(usr, bot.info.roles.halfadmin)) ||
+         (role == BotRole.Admin && checkRole(usr, bot.info.roles.admin));
 
       //
       // getAudioChannel
@@ -209,12 +235,12 @@ namespace ProjectGolan.Vrobot3
 
          var buf = new byte[3840 * 32];
          var ostream = audioClient.OutputStream;
-         var istream = proc.StandardOutput.BaseStream;
+         var istream = proc?.StandardOutput.BaseStream;
 
-         int count;
          try
          {
-            while(!proc.HasExited &&
+            int count;
+            while(proc?.HasExited == false &&
                (count = await istream.ReadAsync(buf, 0, buf.Length)) != 0)
             {
                Thread.Sleep(8);
@@ -228,7 +254,7 @@ namespace ProjectGolan.Vrobot3
          }
          finally
          {
-            istream.Dispose();
+            istream?.Dispose();
             ostream.Dispose();
          }
       }

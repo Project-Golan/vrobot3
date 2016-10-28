@@ -16,24 +16,12 @@ using System.Collections.Generic;
 namespace ProjectGolan.Vrobot3
 {
    //
-   // ServerType
+   // RoleInfo
    //
-   public enum ServerType
+   public struct RoleInfo
    {
-      IRC,
-      Discord
-   }
-
-   //
-   // ServerInfo
-   //
-   public struct ServerInfo
-   {
-      public bool hasAudio;
-      public bool hasColors;
-      public bool hasNewlines;
-      public int  messageSafeMaxLen;
-      public bool shortMessages;
+      public String[] admin;
+      public String[] halfadmin;
    }
 
    //
@@ -42,12 +30,12 @@ namespace ProjectGolan.Vrobot3
    public struct BotInfo
    {
       public Dictionary<String, String[]> enables;
-      public ServerType serverType;
-      public String     serverName;
-      public String     serverPass;
-      public String     serverAddr;
-      public String     adminId;
-      public String[]   channels;
+      public String   serverType;
+      public String   serverName;
+      public String   serverPass;
+      public String   serverAddr;
+      public String[] channels;
+      public RoleInfo roles;
    }
 
    //
