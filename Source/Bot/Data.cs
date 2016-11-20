@@ -24,38 +24,24 @@ using CommandFuncDict =
 
 namespace ProjectGolan.Vrobot3
 {
-   //
-   // BotCommand
-   //
    // Delegate type for bot commands.
-   //
    public delegate void BotCommand(User usr, Channel channel, String msg);
 
-   //
-   // CommandDict
-   //
    // Dictionary of bot commands.
-   //
    public class CommandDict : Dictionary<String, BotCommandStructure> {}
 
-   //
-   // Bot
-   //
    public partial class Bot
    {
       private readonly Dictionary<ulong, String> lastLine;
-      private readonly IBotClient                client;
+      private readonly Client.IChatClient        client;
 
       public List<IBotModule> modules  { get; private set; }
       public CommandFuncDict  cmdfuncs { get; private set; }
       public readonly BotInfo info;
 
-      public bool          isInAudioChannel => client.isInAudioChannel();
-      public BotClientInfo clientInfo       => client.info;
+      public Client.ClientInfo  clientInfo  => client.info;
+      public Client.IChatClient getClient() => client;
 
-      //
-      // Bot constructor
-      //
       public Bot(BotInfo info)
       {
          this.info     = info;
@@ -65,8 +51,8 @@ namespace ProjectGolan.Vrobot3
 
          switch(info.serverType)
          {
-         case "IRC":     this.client = new BotClientIRC(this);     break;
-         case "Discord": this.client = new BotClientDiscord(this); break;
+         case "IRC":     this.client = new Client.ClientIRC(this);     break;
+         case "Discord": this.client = new Client.ClientDiscord(this); break;
          default: throw new BotConfigurationException("Invalid server type.");
          }
 
@@ -84,9 +70,6 @@ namespace ProjectGolan.Vrobot3
                cmdfuncs.Add(kvp.Key, Tuple.Create(mod, kvp.Value));
       }
 
-      //
-      // client
-      //
       public void connect() => client.connect();
 
       public void action(Channel channel, String msg) =>
@@ -109,12 +92,6 @@ namespace ProjectGolan.Vrobot3
       public void reply(User usr, ulong id, String msg) =>
          message(id, usr.name + ": " + msg);
 
-      public void partAudioChannel() => client.partAudioChannel();
-      public Task playAudioFile(String file) => client.playAudioFile(file);
-
-      //
-      // disconnect
-      //
       public void disconnect()
       {
          cmdfuncs.Clear();
@@ -122,24 +99,6 @@ namespace ProjectGolan.Vrobot3
          client.disconnect();
       }
 
-      //
-      // joinAudioChannel
-      //
-      public async Task<bool> joinAudioChannel(User user)
-      {
-         var channel = client.getAudioChannel(user);
-         if(channel != null)
-         {
-            await client.joinAudioChannel(channel);
-            return true;
-         }
-         else
-            return false;
-      }
-
-      //
-      // checkModPermissions
-      //
       public bool checkModPermissions(Channel channel, Type mod)
       {
          String[] enables;

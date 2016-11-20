@@ -59,11 +59,11 @@ namespace ProjectGolan.Vrobot3
                return false;
 
             if(attribute is BotModuleIRCAttribute &&
-               !(client is BotClientIRC))
+               !(client is Client.ClientIRC))
                return false;
 
             if(attribute is BotModuleDiscordAttribute &&
-               !(client is BotClientDiscord))
+               !(client is Client.ClientDiscord))
                return false;
 
             if(attribute is BotModuleRequiresAudioAttribute &&

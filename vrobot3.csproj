@@ -79,7 +79,7 @@
     <Compile Include="Source/Client/Discord.cs" />
     <Compile Include="Source/Client/IRC.cs" />
     <Compile Include="Source/Modules/Mod_Admin.cs" />
-    <Compile Include="Source/Modules/Mod_Audio.cs" />
+    <Compile Include="Source/Modules/Mod_DiscordLogger.cs" />
     <Compile Include="Source/Modules/Mod_Fun.cs" />
     <Compile Include="Source/Modules/Mod_Utils.cs" />
     <Compile Include="Source/Modules/Mod_Idgames.cs" />

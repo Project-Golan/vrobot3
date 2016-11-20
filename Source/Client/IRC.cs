@@ -12,18 +12,11 @@
 
 using System;
 
-namespace ProjectGolan.Vrobot3
+namespace ProjectGolan.Vrobot3.Client
 {
-   //
-   // BotClientIRC
-   //
-   public class BotClientIRC : IBotClient
+   public class ClientIRC : IChatClient
    {
-      //
-      // BotClientIRC constructor
-      //
-      public BotClientIRC(Bot bot) :
-         base(bot)
+      public ClientIRC(Bot bot) : base(bot)
       {
          this.info.hasAudio          = false;
          this.info.hasColors         = true;

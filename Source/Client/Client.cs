@@ -13,12 +13,9 @@
 using System;
 using System.Threading.Tasks;
 
-namespace ProjectGolan.Vrobot3
+namespace ProjectGolan.Vrobot3.Client
 {
-   //
-   // BotClientInfo
-   //
-   public class BotClientInfo
+   public class ClientInfo
    {
       public bool hasAudio;
       public bool hasColors;
@@ -27,17 +24,14 @@ namespace ProjectGolan.Vrobot3
       public bool shortMessages;
    }
 
-   //
-   // IBotClient
-   //
-   public abstract class IBotClient
+   public abstract class IChatClient
    {
       protected Bot bot;
-      public BotClientInfo info { get; protected set; }
+      public ClientInfo info { get; protected set; }
 
-      protected IBotClient(Bot bot)
+      protected IChatClient(Bot bot)
       {
-         this.info = new BotClientInfo();
+         this.info = new ClientInfo();
          this.bot = bot;
       }
 
@@ -58,16 +52,6 @@ namespace ProjectGolan.Vrobot3
 
       // user
       public abstract bool userPermitted(User usr, BotRole role);
-
-      // audio
-      public virtual ChannelAudio getAudioChannel(User usr) =>
-         new ChannelAudio();
-      public virtual async Task joinAudioChannel(ChannelAudio channel) =>
-         await Task.FromResult(0);
-      public virtual void partAudioChannel() {}
-      public virtual bool isInAudioChannel() => false;
-      public virtual async Task playAudioFile(String file) =>
-         await Task.FromResult(0);
    }
 }
 
