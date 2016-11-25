@@ -99,33 +99,48 @@ namespace ProjectGolan.Vrobot3
          client.disconnect();
       }
 
+      private String[] getEnables(Dictionary<String, String[]> enables,
+         Channel channel)
+      {
+         var name = channel.name;
+              if(enables.ContainsKey(name)) return enables[name];
+         else if(enables.ContainsKey("*"))  return enables["*"];
+         else                               return null;
+      }
+
+      private bool checkMod(Type mod, String modName)
+      {
+         const String modBase = "ProjectGolan.Vrobot3.Modules.";
+         var modFull = modBase + modName.Substring(1);
+         Type type;
+
+              if(modName    == "*") return true;
+         else if(modName[0] == '@') type = Type.GetType(modFull);
+         else                       type = Type.GetType(modName);
+
+         return type == mod;
+      }
+
       public bool checkModPermissions(Channel channel, Type mod)
       {
-         String[] enables;
+         String[] enables  = getEnables(info.enables,  channel);
+         String[] disables = getEnables(info.disables, channel);
 
-         if(info.enables.ContainsKey(channel.name))
-            enables = info.enables[channel.name];
-         else if(info.enables.ContainsKey("*"))
-            enables = info.enables["*"];
-         else
-            return true;
+         if(enables == null && disables == null) return true;
 
-         foreach(var modname in enables)
-         {
-            Type type;
+         bool ret = false;
 
-            if(modname == "*")
-               return true;
-            else if(modname[0] == '@')
-               type = Type.GetType("ProjectGolan.Vrobot3.Modules." + modname.Substring(1));
-            else
-               type = Type.GetType(modname);
+         if(enables != null)
+            foreach(var modName in enables)
+               if(checkMod(mod, modName))
+                  {ret = true; break;}
 
-            if(type == mod)
-               return true;
-         }
+         if(disables != null)
+            foreach(var modName in disables)
+               if(checkMod(mod, modName))
+                  {ret = false; break;}
 
-         return false;
+         return ret;
       }
    }
 }

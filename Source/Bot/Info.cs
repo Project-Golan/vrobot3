@@ -30,6 +30,7 @@ namespace ProjectGolan.Vrobot3
    public struct BotInfo
    {
       public Dictionary<String, String[]> enables;
+      public Dictionary<String, String[]> disables;
       public String   serverType;
       public String   serverName;
       public String   serverPass;
