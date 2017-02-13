@@ -1,8 +1,14 @@
-﻿//
-// Mod_Links.cs
+﻿//-----------------------------------------------------------------------------
 //
-// Link title capabilities.
+// Copyright © 2016 Project Golan
 //
+// See "LICENSE" for more information.
+//
+//-----------------------------------------------------------------------------
+//
+// Link expansion.
+//
+//-----------------------------------------------------------------------------
 
 using System;
 using System.Text.RegularExpressions;
@@ -21,42 +27,35 @@ namespace ProjectGolan.Vrobot3
    //
    // Mod_Links
    //
-
-   public sealed class Mod_Links : IBotModule
+   public class Mod_Links : IBotModule
    {
       //
       // URI
       //
-
       private struct URI
       {
          public String method, host, path, query, tag, uri;
       }
 
-      //
-      // Delegates.
-
       private delegate void URIHandler(URI uri, String referer, ref String result);
 
       //
-      // Ctor
+      // Mod_Links constructor
       //
-
       public Mod_Links(Bot bot_) :
          base(bot_)
       {
          events.OnMessage += Evt_OnMessage;
+
+         postSetup();
       }
 
       //
       // Evt_OnMessage
       //
-
       public void Evt_OnMessage(UserInfo usr, String channel, String msg, bool iscmd)
       {
-         //
          // Do this asynchronously, we don't want link parsing to block operation.
-
          new Thread(() => {
             try
             {
@@ -73,7 +72,6 @@ namespace ProjectGolan.Vrobot3
       //
       // GetURITitle
       //
-
       private Match GetURITitle(URI uri, String referer, int kb = 16)
       {
          String rstr = Utils.GetResponseString(uri.uri, 1024 * kb, referer);
@@ -87,7 +85,6 @@ namespace ProjectGolan.Vrobot3
       //
       // URI_Default
       //
-
       private void URI_Default(URI uri, String referer, ref String result)
       {
          var req = WebRequest.Create(uri.uri) as HttpWebRequest;
@@ -112,9 +109,8 @@ namespace ProjectGolan.Vrobot3
       //
       // URI_Youtube
       //
-      // Special fucking flower.
+      // Special fucking snowflake.
       //
-
       private void URI_Youtube(URI uri, String referer, ref String result)
       {
          var req = WebRequest.Create(uri.uri) as HttpWebRequest;
@@ -138,7 +134,6 @@ namespace ProjectGolan.Vrobot3
       //
       // URI_Gelooru
       //
-
       private void URI_Gelbooru(URI uri, String referer, ref String result)
       {
          var match = GetURITitle(uri, referer, 8); // Should be OK to just get the first 8kb here.
@@ -155,7 +150,6 @@ namespace ProjectGolan.Vrobot3
       //
       // URI_Hitbox
       //
-
       private void URI_Hitbox(URI uri, String referer, ref String result)
       {
          String name = WebUtility.HtmlEncode(uri.path.TrimStart(new char[]{'/'}));
@@ -185,7 +179,6 @@ namespace ProjectGolan.Vrobot3
       //
       // This function is really complicated because of exploits. Fuck exploits.
       //
-
       private void TryParseURIs(String channel, String msg)
       {
          try
@@ -260,10 +253,10 @@ namespace ProjectGolan.Vrobot3
                      referer = uri.method + "://" + uri.host;
 
                      Dictionary<String, URIHandler> handlers = new Dictionary<String, URIHandler>(){
-                        { "youtube.com",  URI_Youtube  },
-                        { "youtu.be",     URI_Youtube  },
-                        { "gelbooru.com", URI_Gelbooru },
-                        { "hitbox.tv",    URI_Hitbox   },
+                        {"youtube.com",  URI_Youtube },
+                        {"youtu.be",     URI_Youtube },
+                        {"gelbooru.com", URI_Gelbooru},
+                        {"hitbox.tv",    URI_Hitbox  },
                      };
 
                      String hostst = Regex.Replace(uri.host, @"^www\.", String.Empty, RegexOptions.Multiline);

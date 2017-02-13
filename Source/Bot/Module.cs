@@ -70,12 +70,13 @@ namespace ProjectGolan.Vrobot3
    //
    // Used for registering commands in a module.
    //
-   public struct BotCommandStructure
+   public class BotCommandStructure
    {
       public BotCommand cmd;
       public String     help;
       public bool       hidden;
       public BotRole    role;
+      public Type       mod;
    }
 
    //
@@ -104,7 +105,13 @@ namespace ProjectGolan.Vrobot3
             onSeen?.Invoke(usr, channel);
       }
 
-      protected IBotModule(Bot bot) { this.bot = bot; }
+      protected void postSetup()
+      {
+         foreach(var kvp in commands)
+            kvp.Value.mod = this.GetType();
+      }
+
+      protected IBotModule(Bot bot) {this.bot = bot;}
 
       public    CommandDict commands = new CommandDict();
       public    Events      events;

@@ -24,6 +24,8 @@ namespace ProjectGolan.Vrobot3.Modules
          base(bot_)
       {
          events.onMessage += onMessage;
+
+         postSetup();
       }
 
       //

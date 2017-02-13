@@ -15,13 +15,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 
-using CommandFuncDict =
-   System.Collections.Generic.Dictionary<
-      System.String,
-      System.Tuple<
-         ProjectGolan.Vrobot3.IBotModule,
-         ProjectGolan.Vrobot3.BotCommandStructure>>;
-
 namespace ProjectGolan.Vrobot3
 {
    // Delegate type for bot commands.
@@ -29,14 +22,16 @@ namespace ProjectGolan.Vrobot3
 
    // Dictionary of bot commands.
    public class CommandDict : Dictionary<String, BotCommandStructure> {}
+   public class CommandFuncDict :
+      Dictionary<String, Tuple<IBotModule, BotCommandStructure>> {}
 
    public partial class Bot
    {
       private readonly Dictionary<ulong, String> lastLine;
       private readonly Client.IChatClient        client;
 
-      public List<IBotModule> modules  { get; private set; }
-      public CommandFuncDict  cmdfuncs { get; private set; }
+      public List<IBotModule> modules  {get; private set;}
+      public CommandFuncDict  cmdfuncs {get; private set;}
       public readonly BotInfo info;
 
       public Client.ClientInfo  clientInfo  => client.info;

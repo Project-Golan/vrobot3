@@ -40,11 +40,13 @@ namespace ProjectGolan.Vrobot3.Modules
          base(bot_)
       {
          commands["quote"] = new BotCommandStructure{
-            cmd = cmdQuote,
+            cmd  = cmdQuote,
             help = "Get a quote from the Doominati Quote DB.\n" +
                    "Syntax: .quote [id]\n" +
                    "Example: .quote 536"
          };
+
+         postSetup();
       }
 
       //

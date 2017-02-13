@@ -1,9 +1,15 @@
-﻿//
-// Mod_Memo.cs
+﻿//-----------------------------------------------------------------------------
+//
+// Copyright © 2016 Project Golan
+//
+// See "LICENSE" for more information.
+//
+//-----------------------------------------------------------------------------
 //
 // Memoing capabilities.
-// @memocount, .memo, .memoseen
+// .memo
 //
+//-----------------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
@@ -16,13 +22,11 @@ namespace ProjectGolan.Vrobot3.Modules
    //
    // Mod_Memo
    //
-
-   public sealed class Mod_Memo : IBotModule
+   public class Mod_Memo : IBotModule
    {
       //
       // MemoFlags
       //
-
       [Flags]
       enum MemoFlags
       {
@@ -32,33 +36,22 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       // MemoInfo
       //
-
       private struct MemoInfo
       {
-         //
-         // Data.
-
          public String content;
          public String sender;
          public DateTime time;
          public MemoFlags flags;
       };
 
-      //
       // MemoDict
-      //
-
       private class MemoDict : Dictionary<String, List<MemoInfo>> {}
-
-      //
-      // Data.
 
       MemoDict memos = new MemoDict();
 
       //
-      // Ctor
+      // Mod_Memo constructor
       //
-
       public Mod_Memo(Bot bot_) :
          base(bot_)
       {
@@ -86,12 +79,13 @@ namespace ProjectGolan.Vrobot3.Modules
          events.OnMessage += Evt_OnMessage;
          events.OnDisconnected += Evt_OnDisconnected;
          events.OnSeen += Evt_OnSeen;
+
+         postSetup();
       }
 
       //
       // Cmd_MemoCount
       //
-
       public void Cmd_MemoCount(UserInfo usr, String channel, String msg)
       {
          bot.Reply(usr, channel, memos.Count.ToString());
@@ -100,7 +94,6 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       // Cmd_Memo
       //
-
       public void Cmd_Memo(UserInfo usr, String channel, String msg)
       {
          String[] args = Utils.GetArguments(msg, commands["memo"].help, 2, 2, ' ');
@@ -119,7 +112,6 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       // Cmd_MemoSeen
       //
-
       public void Cmd_MemoSeen(UserInfo usr, String channel, String msg)
       {
          String[] args = Utils.GetArguments(msg, commands["memoseen"].help, 2, 2, ' ');
@@ -139,7 +131,6 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       // AddMemo
       //
-
       private void AddMemo(String name, MemoInfo memo)
       {
          name = name.ToLower();
@@ -155,7 +146,6 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       // OutputMemos
       //
-
       private void OutputMemos(String channel, String realnick, bool onseen)
       {
          String nick = realnick.ToLower();
@@ -198,7 +188,6 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       // Evt_OnMessage
       //
-
       public void Evt_OnMessage(UserInfo usr, String channel, String msg, bool iscmd)
       {
          OutputMemos(channel, usr.Nick, false);
@@ -207,7 +196,6 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       // Evt_OnSeen
       //
-
       public void Evt_OnSeen(UserInfo usr, String channel)
       {
          OutputMemos(channel, usr.Nick, true);
@@ -216,7 +204,6 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       // Evt_OnDisconnected
       //
-
       public void Evt_OnDisconnected()
       {
          WriteMemos();
@@ -225,7 +212,6 @@ namespace ProjectGolan.Vrobot3.Modules
       //
       // WriteMemos
       //
-
       private void WriteMemos()
       {
          File.WriteAllText("/srv/irc/vrobot3/data/memos." + bot.n_groupname + ".json",

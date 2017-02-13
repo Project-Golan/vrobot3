@@ -19,7 +19,7 @@ delegate void HaxFn(String name, String vname);
 
 namespace ProjectGolan.Vrobot3.Modules
 {
-   [BotModuleDiscord]
+   [BotModuleDiscord, BotModuleDisabled]
    public class Mod_DiscordLogger : IBotModule
    {
       public Mod_DiscordLogger(Bot bot) : base(bot)
@@ -82,6 +82,8 @@ namespace ProjectGolan.Vrobot3.Modules
             if(delta != String.Empty)
                await verMsg(e.Server, "User updated", delta);
          });
+
+         postSetup();
       }
 
       private EventHandler<T> catchFunc<T>(EventHandler<T> fn)

@@ -1,8 +1,14 @@
-﻿//
-// Mod_Seen.cs
+﻿//-----------------------------------------------------------------------------
+//
+// Copyright © 2016 Project Golan
+//
+// See "LICENSE" for more information.
+//
+//-----------------------------------------------------------------------------
 //
 // .seen
 //
+//-----------------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
@@ -17,36 +23,27 @@ namespace ProjectGolan.Vrobot3
    //
    // Mod_Seen
    //
-
-   public sealed class Mod_Seen : IBotModule
+   public class Mod_Seen : IBotModule
    {
       //
       // SeenName
       //
-
       private class SeenName
       {
          public String real, check;
          public DateTime time;
       }
 
-      //
       // SeenDates
-      //
-
       private class SeenDates : List<SeenName> {}
-
-      //
-      // Data.
 
       private SeenDates seendates = new SeenDates();
       private TimeZoneInfo burb;
       private DateTime lastwrite = DateTime.Now;
 
       //
-      // Ctor
+      // Mod_Seen constructor
       //
-
       public Mod_Seen(Bot bot_) :
          base(bot_)
       {
@@ -55,8 +52,8 @@ namespace ProjectGolan.Vrobot3
                                                                                   bot.n_groupname + ".json"));
 
          commands["seen"] = new BotCommandStructure { cmd = Cmd_Seen,
-            help = "Responds with the last time I saw someone. || " +
-                   "Syntax: .seen person || " +
+            help = "Responds with the last time I saw someone.\n" +
+                   "Syntax: .seen person\n" +
                    "Example: .seen vrobot3"
          };
          
@@ -64,12 +61,13 @@ namespace ProjectGolan.Vrobot3
          events.OnDisconnected += Evt_OnDisconnected;
 
          burb = TimeZoneInfo.CreateCustomTimeZone("burb", new TimeSpan(10, -30, 0), "burb", "burb");
+
+         postSetup();
       }
 
       //
       // Cmd_Seen
       //
-
       public void Cmd_Seen(UserInfo usr, String channel, String msg)
       {
          if(msg.Length == 0 || msg.Contains(" "))
@@ -79,20 +77,12 @@ namespace ProjectGolan.Vrobot3
          var seen = from sdata in seendates where sdata.check == name select sdata;
          if(seen.Any())
          {
-            var other = seen.First();
-            String outp = String.Empty;
+            var other   = seen.First();
+            var fuzzy   = Utils.FuzzyRelativeDate(other.time, DateTime.Now.FromNtp());
+            var time    = other.time.ToShortTimeString();
+            var pidgeon = TimeZoneInfo.ConvertTime(other.time, TimeZoneInfo.Local, burb).ToShortTimeString();
 
-            outp += "I last saw ";
-            outp += other.real;
-            outp += " active ";
-            outp += Utils.FuzzyRelativeDate(other.time, DateTime.Now.FromNtp());
-            outp += ", at ";
-            outp += other.time.ToShortTimeString();
-            outp += " CST (";
-            outp += TimeZoneInfo.ConvertTime(other.time, TimeZoneInfo.Local, burb).ToShortTimeString();
-            outp += " pidgeon time).";
-
-            bot.Reply(usr, channel, outp);
+            bot.Reply(usr, channel, $"I last saw {other.real} active {fuzzy}, at {time} CST ({pidgeon} AEST.)");
          }
          else
             bot.Reply(usr, channel, "I haven't seen " + msg + " before, sorry.");
@@ -103,7 +93,6 @@ namespace ProjectGolan.Vrobot3
       //
       // Evt_OnScreen
       //
-
       public void Evt_OnSeen(UserInfo usr, String channel)
       {
          String name = usr.Nick.ToLower();
@@ -123,7 +112,6 @@ namespace ProjectGolan.Vrobot3
       //
       // Evt_OnDisconnected
       //
-
       public void Evt_OnDisconnected()
       {
          WriteSeenDates();
@@ -132,7 +120,6 @@ namespace ProjectGolan.Vrobot3
       //
       // WriteSeenDates
       //
-
       private void WriteSeenDates()
       {
          File.WriteAllText("/srv/irc/vrobot3/data/seendates." + bot.n_groupname + ".json",

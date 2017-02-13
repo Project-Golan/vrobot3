@@ -61,6 +61,8 @@ namespace ProjectGolan.Vrobot3.Modules
             cmd = cmdMystery,
             help = @"Does nothing. \o/"
          };
+
+         postSetup();
       }
 
       //
@@ -117,8 +119,9 @@ namespace ProjectGolan.Vrobot3.Modules
                let fhidden = kvp.Value.Item2.hidden
                let fadmin  = kvp.Value.Item2.role != BotRole.User
                where
-                  bot.checkModPermissions(channel, this.GetType()) &&
-                  (admin || !fadmin) && !fhidden
+                  bot.checkModPermissions(channel, kvp.Value.Item2.mod) &&
+                  ((admin && fadmin) || (!admin && !fadmin)) &&
+                  !fhidden
                orderby kvp.Key
                select kvp.Key;
 
@@ -196,7 +199,7 @@ namespace ProjectGolan.Vrobot3.Modules
             "Looks good to me.",
             "Sure, why not?",
             "It is certain.",
-            "Please no. Please no. Please no.",
+            "pls no",
             "Yes, please.",
             "Nah.",
             "Go for it!",

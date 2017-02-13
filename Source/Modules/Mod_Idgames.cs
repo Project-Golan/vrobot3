@@ -44,6 +44,8 @@ namespace ProjectGolan.Vrobot3.Modules
                    "Example: .idgames scythe, filename, 4\n" +
                    "Example: .idgames"
          };
+
+         postSetup();
       }
 
       //

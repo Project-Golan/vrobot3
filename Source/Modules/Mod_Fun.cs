@@ -107,6 +107,8 @@ namespace ProjectGolan.Vrobot3.Modules
 //       };
 
          events.onMessage += onMessage;
+
+         postSetup();
       }
 
       //
