@@ -6,3 +6,6 @@ packages
 *.swp
 Makefile
 .idea
+.vs
+data
+app.config

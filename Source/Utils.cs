@@ -82,22 +82,15 @@ namespace ProjectGolan.Vrobot3
          if(span.Seconds == 0)
             return "now";
 
-         var denom = span.Days > 0 ? "day" :
-                     span.Hours > 0 ? "hour" :
-                     span.Minutes > 0 ? "minute" :
-                     "second";
-
+         String denom;
          int number;
-         switch(denom)
-         {
-         default:       number = 0;            break;
-         case "second": number = span.Seconds; break;
-         case "minute": number = span.Minutes; break;
-         case "hour":   number = span.Hours;   break;
-         case "day":    number = span.Days;    break;
-         }
 
-         return $"{number} {denom}{number != 1 ? "s" : String.Empty} ago";
+              if(span.Days    > 0) {denom = "day";    number = span.Days;}
+         else if(span.Hours   > 0) {denom = "hour";   number = span.Hours;}
+         else if(span.Minutes > 0) {denom = "minute"; number = span.Minutes;}
+         else                      {denom = "second"; number = span.Seconds;}
+
+         return $"{number} {denom}{(number != 1 ? "s" : String.Empty)} ago";
       }
 
       //
