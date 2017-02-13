@@ -74,21 +74,25 @@ namespace ProjectGolan.Vrobot3
 
       public void action(Channel channel, String msg) =>
          client.sendAction(channel, msg);
+
       public void action(ulong id, String msg) =>
          client.sendAction(client.getChannel(id), msg);
 
       public void message(Channel channel, String msg) =>
          client.sendMessage(channel, msg);
+
       public void message(ulong id, String msg) =>
          client.sendMessage(client.getChannel(id), msg);
 
       public void messageRaw(Channel channel, String msg) =>
          client.sendMessageRaw(channel, msg);
+
       public void messageRaw(ulong id, String msg) =>
          client.sendMessageRaw(client.getChannel(id), msg);
 
       public void reply(User usr, Channel channel, String msg) =>
          message(channel, usr.name + ": " + msg);
+
       public void reply(User usr, ulong id, String msg) =>
          message(id, usr.name + ": " + msg);
 
@@ -97,15 +101,6 @@ namespace ProjectGolan.Vrobot3
          cmdfuncs.Clear();
          modules.Clear();
          client.disconnect();
-      }
-
-      private String[] getEnables(Dictionary<String, String[]> enables,
-         Channel channel)
-      {
-         var name = channel.name;
-              if(enables.ContainsKey(name)) return enables[name];
-         else if(enables.ContainsKey("*"))  return enables["*"];
-         else                               return null;
       }
 
       private bool checkMod(Type mod, String modName)
@@ -121,26 +116,37 @@ namespace ProjectGolan.Vrobot3
          return type == mod;
       }
 
-      public bool checkModPermissions(Channel channel, Type mod)
+      private bool procModPermissions(Type mod, String[] e, String[] d = null)
       {
-         String[] enables  = getEnables(info.enables,  channel);
-         String[] disables = getEnables(info.disables, channel);
-
-         if(enables == null && disables == null) return true;
+         if(e == null)
+            return false;
 
          bool ret = false;
+         foreach(var modName in e)
+            if(checkMod(mod, modName)) {ret = true; break;}
 
-         if(enables != null)
-            foreach(var modName in enables)
-               if(checkMod(mod, modName))
-                  {ret = true; break;}
-
-         if(disables != null)
-            foreach(var modName in disables)
-               if(checkMod(mod, modName))
-                  {ret = false; break;}
+         if(d != null)
+            foreach(var modName in d)
+               if(checkMod(mod, modName)) return false;
 
          return ret;
+      }
+
+      public bool checkModPermissions(Channel channel, Type mod)
+      {
+         String[] e = null;
+         String[] d = null;
+
+         if( info.enables.ContainsKey("*")) e =  info.enables["*"];
+         if(info.disables.ContainsKey("*")) d = info.disables["*"];
+
+         bool ret = procModPermissions(mod, e, d);
+
+         String name = channel.name;
+         e =  info.enables.ContainsKey(name) ?  info.enables[name] : null;
+         d = info.disables.ContainsKey(name) ? info.disables[name] : null;
+
+         return ret || procModPermissions(mod, e, d);
       }
    }
 }
